@@ -8,12 +8,6 @@ def muldiv(num1, num2, boolOperation=True):
         return num1*num2
     return num1/num2
 
-def factorial(num):
-    if num == 0 or num == 1:
-        return 1
-    else:
-        return num*factorial(num-1)
-
 print("0 - Exit\n1 - Add\n2 - Substract\n3 - Multiply\n4 - Divide")
 
 while True:
