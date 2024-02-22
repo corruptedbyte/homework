@@ -1,51 +1,109 @@
 from tkinter import *
 
-def packageComponents(*components):
-    for component in components:
-        component.pack()
-def configButtons(*buttons):
-    colors = ["red", "blue", "green", "yellow", "pink", "purple", "magenta", "orange", "brown", "aqua"]
-    btnIndex = 0
-    for button in buttons:
-        button.config(text=colors[btnIndex].capitalize(), bg=colors[btnIndex])
-        btnIndex += 1
-def configLabels(*labels):
-    hexColors = ["#ff0000", "#0000ff", "#008000", "#ffff00", "#ffc0cb", "#800080", "#ff00ff", "#ffa500", "#a52a2a", "#00ffff"]
-    labelIndex = 0
-    for labelObj in labels:
-        labelObj.config(text=hexColors[labelIndex])
-        labelIndex += 1
+bomb = 100
+score = 0
+press_return = True
+best_score = 0
+
+def save_best_score(score):
+    try:
+        with open("best_score.txt", "r") as file:
+            best_score = int(file.read())
+            if score > best_score:
+                with open("best_score.txt", "w") as file:
+                    file.write(str(score))
+    except FileNotFoundError:
+        with open("best_score.txt", "w") as file:
+            file.write(str(score))
+
+def load_best_score():
+    global best_score
+    try:
+        with open("best_score.txt", "r") as file:
+            best_score = int(file.read())
+            label_best_score.config(text="Best Score: " + str(best_score), font=("Comic Sans MS", 16))
+    except FileNotFoundError:
+        label_best_score.config(text="Best Score: 0", font=("Comic Sans MS", 15))
+
+def start(event):
+    global press_return, bomb, score
+    if not press_return:
+        pass
+    else:
+        bomb = 100
+        score = 0
+        label.config(text="")
+        uptade_display()
+        update_point()
+        update_bomb()
+        press_return = False
+
+def uptade_display():
+    global bomb, score
+    if bomb > 50:
+        bomb_label.config(image=normal_photo)
+    elif 0 < bomb < 50:
+        bomb_label.config(image=no_photo)
+    else:
+        bomb_label.config(image=bang_photo)
+    fuse_label.config(text="Fuse: " + str(bomb))
+    score_label.config(text="Score: " + str(score))
+    fuse_label.after(100, uptade_display)
+
+def update_bomb():
+    global bomb
+    bomb -= 20
+    if is_alive():
+        fuse_label.after(4000, update_bomb)
+
+def update_point():
+    global score
+    score += 1
+    if is_alive():
+        score_label.after(3000, update_point)
+
+def click():
+    global bomb
+    if is_alive():
+        bomb += 1
+
+def is_alive():
+    global bomb, press_return
+    if bomb <= 0:
+        label.config(text="Bang Bang!")
+        press_return = True
+        save_best_score(score)
+        load_best_score()
+        return False
+    else:
+        return True
 
 root = Tk()
+root.title("bang bang")
 
-root.geometry("200x550")
-root.resizable(False, False)
-root.title("Color picker")
+root.geometry("500x550")
+label = Label(root, text="press Enter to start", font=("Comic Sans MS", 12))
+label.pack()
 
-btn1 = Button()
-btn2 = Button()
-btn3 = Button()
-btn4 = Button()
-btn5 = Button()
-btn6 = Button()
-btn7 = Button()
-btn8 = Button()
-btn9 = Button()
-btn10 = Button()
+fuse_label = Label(root, text="Fuse: " + str(bomb), font=("Comic Sans MS", 14))
+fuse_label.pack()
 
-lab1 = Label()
-lab2 = Label()
-lab3 = Label()
-lab4 = Label()
-lab5 = Label()
-lab6 = Label()
-lab7 = Label()
-lab8 = Label()
-lab9 = Label()
-lab10 = Label()
+score_label = Label(root, text="Score: " + str(score), font=("Comic Sans MS", 14))
+score_label.pack()
 
-configButtons(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10)
-configLabels(lab1, lab2, lab3, lab4, lab5, lab6, lab7, lab8, lab9, lab10)
-packageComponents(btn1, lab1, btn2, lab2, btn3, lab3, btn4, lab4, btn5, lab5, btn6, lab6, btn7, lab7, btn8, lab8, btn9, lab9, btn10, lab10)
+label_best_score = Label(root, text="Best Score: " + str(best_score), font=("Comic Sans MS", 14))
+label_best_score.pack()
+
+no_photo = PhotoImage(file="img/bomb_no.gif")
+normal_photo = PhotoImage(file="img/bomb_normal.gif")
+bang_photo = PhotoImage(file="img/pow.gif")
+
+bomb_label = Label(root, image=normal_photo)
+bomb_label.pack()
+
+click_button = Button(root, text="Click mek", font=('Conic Sans MS', 14), bg='#000000', fg='#ffffff', command=click, width=15)
+click_button.pack()
+
+root.bind("<Return>", start)
 
 root.mainloop()
