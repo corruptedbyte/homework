@@ -94,9 +94,9 @@ score_label.pack()
 label_best_score = Label(root, text="Best Score: " + str(best_score), font=("Comic Sans MS", 14))
 label_best_score.pack()
 
-no_photo = PhotoImage(file="img/bomb_no.gif")
-normal_photo = PhotoImage(file="img/bomb_normal.gif")
-bang_photo = PhotoImage(file="img/pow.gif")
+no_photo = PhotoImage(file="bomb_no.gif")
+normal_photo = PhotoImage(file="bomb_normal.gif")
+bang_photo = PhotoImage(file="pow.gif")
 
 bomb_label = Label(root, image=normal_photo)
 bomb_label.pack()
