@@ -12,7 +12,7 @@ class Character {
     int speed;
 
 public:
-    Character() : name{ "NN" }, health {0}, strength{0}, speed{0} {}
+    Character() : name{ "NN" }, health{ 0 }, strength{ 0 }, speed{ 0 } {}
     Character(string na, int he, int st, int sp) : name{ na }, health{ he }, strength{ st }, speed{ sp } {}
 
     string getName() const {
@@ -50,7 +50,7 @@ public:
     }
 };
 
-class Enemy: public Character {
+class Enemy : public Character {
 public:
     Enemy()
     {
@@ -60,7 +60,7 @@ public:
         setSpeed(rand() % 10);
     }
 };
-class Us: public Character {
+class Us : public Character {
     int gold;
 public:
     Us(string name) {
@@ -85,7 +85,7 @@ public:
 void fight(Us& player) {
     Enemy enemy;
     int choice;
-    bool defeated;
+    bool defeated = true;
 
     cout << "You've encountered an enemy!" << endl;
     cout << "Enemy strength: " << enemy.getStrength() << endl;
@@ -103,10 +103,12 @@ void fight(Us& player) {
             system("cls");
             cout << "Your Health: " << player.getHealth() << endl;
             cout << "Enemy Health: " << enemy.getHealth() << endl;
-            
+            break;
+
         case 2:
             if (player.getSpeed() > enemy.getSpeed()) {
-                break;
+                defeated = false;
+                enemy.setHealth(0);
             }
             else {
                 player.damage(rand() % enemy.getStrength());
@@ -115,12 +117,16 @@ void fight(Us& player) {
         }
     }
     system("cls");
-    if (enemy.getHealth() <= 0) {
+    if (defeated) {
         player.addGold(10);
         cout << "You defeated the enemy! +10 gold!";
         system("pause");
     }
-        
+    else {
+        cout << "You escaped the enemy!";
+        system("pause");
+    }
+
 }
 
 void menu(Us& player) {
@@ -150,6 +156,7 @@ void menu(Us& player) {
             else {
                 fight(player);
             }
+            break;
         case 2:
             system("cls");
             cout << "Your strength: " << player.getStrength() << endl;
@@ -157,6 +164,7 @@ void menu(Us& player) {
             cout << "Your health: " << player.getHealth() << endl;
             cout << "Your gold: " << player.getGold() << endl;
             system("pause");
+            break;
         case 3:
             if (player.getGold() == 0)
                 break;
@@ -170,12 +178,16 @@ void menu(Us& player) {
             case 1:
                 player.spendGold(5);
                 player.heal(10);
+                break;
             case 2:
                 player.spendGold(10);
                 player.heal(20);
+                break;
             case 3:
                 player.spendGold(15);
                 player.heal(30);
+                break;
+            break;
             }
         }
     }
