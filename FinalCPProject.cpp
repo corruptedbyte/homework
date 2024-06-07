@@ -12,7 +12,7 @@ class Character {
     int speed;
 
 public:
-    Character() : name{ "NN" }, health {0}, strength{0}, speed{0} {}
+    Character() : name{ "NN" }, health{ 0 }, strength{ 0 }, speed{ 0 } {}
     Character(string na, int he, int st, int sp) : name{ na }, health{ he }, strength{ st }, speed{ sp } {}
 
     string getName() const {
@@ -50,7 +50,7 @@ public:
     }
 };
 
-class Enemy: public Character {
+class Enemy : public Character {
 public:
     Enemy()
     {
@@ -60,14 +60,14 @@ public:
         setSpeed(rand() % 10);
     }
 };
-class Us: public Character {
+class Us : public Character {
     int gold;
 public:
     Us(string name) {
         this->gold = 0;
 
         setHealth(100);
-        setStrength(100);
+        setStrength(rand() % 50);
         setSpeed(rand() % 30);
         setName(name);
     }
@@ -93,11 +93,7 @@ int fight(Us& player) {
     cout << "Enemy strength: " << enemy.getStrength() << endl;
     cout << "Enemy health: " << enemy.getHealth() << endl;
 
-    while (player.getHealth() > 0 || player.getHealth() == 0) {
-        while (enemy.getHealth() > 0 || enemy.getHealth() == 0) {
-            if (player.getHealth() == 0)
-                break;
-
+    while (player.getHealth() > 0 || player.getHealth() != 0) {
             cout << "1 - Fight" << endl;
             cout << "2 - Flee" << endl;
             cin >> choice;
@@ -120,19 +116,18 @@ int fight(Us& player) {
                 }
                 break;
             }
-        }
-        if (enemy.getHealth() <= 0) {
-            player.addGold(10);
-            cout << "You defeated the enemy! +10 gold!";
-            system("pause");
-            return 0;
-        }
+            if (player.getHealth() <= 0)
+                break;
+            if (enemy.getHealth() <= 0)
+                break;
     }
     return 0;
 }
 
 void menu(Us& player) {
-    while (player.getHealth() > 0 || player.getHealth() == 0) {
+    while (player.getHealth() > 0 || player.getHealth() != 0) {
+        if (player.getHealth() <= 0)
+            break;
         int choice = 0;
         cout << "1 - Explore" << endl;
         cout << "2 - View stats" << endl;
