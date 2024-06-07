@@ -12,7 +12,7 @@ class Character {
     int speed;
 
 public:
-    Character() : name{ "NN" }, health{ 0 }, strength{ 0 }, speed{ 0 } {}
+    Character() : name{ "NN" }, health {0}, strength{0}, speed{0} {}
     Character(string na, int he, int st, int sp) : name{ na }, health{ he }, strength{ st }, speed{ sp } {}
 
     string getName() const {
@@ -50,7 +50,7 @@ public:
     }
 };
 
-class Enemy : public Character {
+class Enemy: public Character {
 public:
     Enemy()
     {
@@ -60,7 +60,7 @@ public:
         setSpeed(rand() % 10);
     }
 };
-class Us : public Character {
+class Us: public Character {
     int gold;
 public:
     Us(string name) {
@@ -82,56 +82,57 @@ public:
     }
 };
 
-void fight(Us& player) {
+int fight(Us& player) {
     Enemy enemy;
     int choice;
-    bool defeated = true;
+    bool defeated;
+
+    system("cls");
 
     cout << "You've encountered an enemy!" << endl;
     cout << "Enemy strength: " << enemy.getStrength() << endl;
     cout << "Enemy health: " << enemy.getHealth() << endl;
 
-    while (enemy.getHealth() > 0 || enemy.getHealth() == 0) {
-        cout << "1 - Fight" << endl;
-        cout << "2 - Flee" << endl;
-        cin >> choice;
-        switch (choice) {
-        case 1:
-            enemy.damage(rand() % player.getStrength());
-            player.damage(rand() % enemy.getStrength());
+    while (player.getHealth() > 0 || player.getHealth() == 0) {
+        while (enemy.getHealth() > 0 || enemy.getHealth() == 0) {
+            if (player.getHealth() == 0)
+                break;
 
-            system("cls");
-            cout << "Your Health: " << player.getHealth() << endl;
-            cout << "Enemy Health: " << enemy.getHealth() << endl;
-            break;
-
-        case 2:
-            if (player.getSpeed() > enemy.getSpeed()) {
-                defeated = false;
-                enemy.setHealth(0);
-            }
-            else {
+            cout << "1 - Fight" << endl;
+            cout << "2 - Flee" << endl;
+            cin >> choice;
+            switch (choice) {
+            case 1:
+                enemy.damage(rand() % player.getStrength());
                 player.damage(rand() % enemy.getStrength());
-                cout << "You couldn't escape so the enemy attacked you!" << endl;
+
+                system("cls");
+                cout << "Your Health: " << player.getHealth() << endl;
+                cout << "Enemy Health: " << enemy.getHealth() << endl;
+                break;
+            case 2:
+                if (player.getSpeed() > enemy.getSpeed()) {
+                    break;
+                }
+                else {
+                    player.damage(rand() % enemy.getStrength());
+                    cout << "You couldn't escape so the enemy attacked you!" << endl;
+                }
+                break;
             }
         }
+        if (enemy.getHealth() <= 0) {
+            player.addGold(10);
+            cout << "You defeated the enemy! +10 gold!";
+            system("pause");
+            return 0;
+        }
     }
-    system("cls");
-    if (defeated) {
-        player.addGold(10);
-        cout << "You defeated the enemy! +10 gold!";
-        system("pause");
-    }
-    else {
-        cout << "You escaped the enemy!";
-        system("pause");
-    }
-
+    return 0;
 }
 
 void menu(Us& player) {
     while (player.getHealth() > 0 || player.getHealth() == 0) {
-        system("cls");
         int choice = 0;
         cout << "1 - Explore" << endl;
         cout << "2 - View stats" << endl;
@@ -144,7 +145,6 @@ void menu(Us& player) {
         int chance = rand();
 
         switch (choice) {
-            choice = 0;
             system("cls");
         case 1:
             if (chance >= RAND_MAX / 2) {
@@ -173,6 +173,7 @@ void menu(Us& player) {
             cout << "1 - Buy 10 health (5 gold)" << endl;
             cout << "2 - Buy 20 health (10 gold)" << endl;
             cout << "3 - Buy 30 health (15 gold)" << endl;
+            cout << "0 - Exit" << endl;
             cin >> choice;
             switch (choice) {
             case 1:
@@ -187,9 +188,11 @@ void menu(Us& player) {
                 player.spendGold(15);
                 player.heal(30);
                 break;
-            break;
             }
+        case 0:
+            break;
         }
+        system("cls");
     }
 }
 
